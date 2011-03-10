@@ -22,7 +22,8 @@ build_pcre() {
     tar zxf ${TARGET}.tar.gz
 
     case $LIBNAME in
-	device)  ARCH="armv6"; HOST="--host=arm-apple-darwin";;
+	armv6)  ARCH="armv6"; HOST="--host=arm-apple-darwin";;
+	armv7)   ARCH="armv7"; HOST="--host=arm-apple-darwin";;
 	*)       ARCH="i386"; HOST="";;
     esac
 
@@ -72,7 +73,8 @@ build_pcre() {
 
 
 
-build_pcre "device" "iPhoneOS"
+build_pcre "armv6" "iPhoneOS"
+build_pcre "armv7"  "iPhoneOS"
 build_pcre "simulator" "iPhoneSimulator"
 
 ### Then, combine them into one..
@@ -85,8 +87,8 @@ mkdir dist
 
 for i in pcre pcrecpp pcreposix
 do
-    lipo -create dist-device/lib/lib$i.a dist-simulator/lib/lib$i.a \
-	-o dist/lib/lib$i.a
+    lipo -create dist-armv6/lib/lib$i.a dist-simulator/lib/lib$i.a \
+	dist-armv7/lib/lib$i.a -o dist/lib/lib$i.a
 done
 
 /bin/rm -rf dist-simulator dist-device
